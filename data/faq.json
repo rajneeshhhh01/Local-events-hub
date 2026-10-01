@@ -1,0 +1,72 @@
+[
+  {
+    "question": "How do I make an account?",
+    "keywords": ["account", "register", "sign up", "signup", "join"],
+    "answer": "Click 'Register' at the top. Type your name, email and a password with letters and numbers. Then log in."
+  },
+  {
+    "question": "How do I log in?",
+    "keywords": ["login", "log in", "sign in", "signin"],
+    "answer": "Click 'Log in' at the top. Type your email and password. If you forget your password, please ask the event team."
+  },
+  {
+    "question": "I forgot my password.",
+    "keywords": ["forgot", "forget", "reset", "lost", "password"],
+    "answer": "We do not have a reset page yet. Please email the event team at help@localevents.example and they will help you."
+  },
+  {
+    "question": "How do I find an event?",
+    "keywords": ["find", "search", "look for", "browse", "filter", "event"],
+    "answer": "Go to 'Events'. Type a word in the search box. You can also pick a category or 'Upcoming' / 'Past' and press 'Search'."
+  },
+  {
+    "question": "How do I get tickets?",
+    "keywords": ["ticket", "buy", "get tickets", "book a", "book tickets"],
+    "answer": "Open an event and fill the 'Request tickets' form. You can ask for 1 to 10 tickets. The admin will approve or reject your request."
+  },
+  {
+    "question": "How do I see my requests?",
+    "keywords": ["my requests", "my tickets", "status", "check"],
+    "answer": "Click 'My tickets' at the top. You will see each request and its status: pending, approved, rejected or cancelled."
+  },
+  {
+    "question": "Can I change my ticket request?",
+    "keywords": ["change", "edit", "update", "modify", "quantity"],
+    "answer": "Yes, if the request is still 'pending'. Go to 'My tickets' and click 'Edit'. After approval you cannot change it."
+  },
+  {
+    "question": "How do I cancel a request?",
+    "keywords": ["cancel", "remove", "delete", "cancel booking", "cancel ticket", "cancel request"],
+    "answer": "Go to 'My tickets' and click 'Cancel' next to a pending request."
+  },
+  {
+    "question": "What does pending mean?",
+    "keywords": ["pending", "waiting", "approved", "rejected", "mean"],
+    "answer": "Pending means the admin has not checked your request yet. Approved means your tickets are saved. Rejected means there are no tickets for you."
+  },
+  {
+    "question": "How much do tickets cost?",
+    "keywords": ["cost", "price", "pay", "payment", "money", "free", "fee"],
+    "answer": "Each event shows its price. Many events are free. You pay at the door. This website does not take card payments."
+  },
+  {
+    "question": "Is my data safe?",
+    "keywords": ["data", "safe", "privacy", "private", "secure", "security", "information"],
+    "answer": "Your password is stored as a hash, not as plain text. We only keep your name and email. The help bot does not send your data to other websites."
+  },
+  {
+    "question": "What can the admin do?",
+    "keywords": ["admin", "manage", "role", "staff"],
+    "answer": "The admin can add, edit and delete events, approve or reject ticket requests, manage categories and users, and see the activity log."
+  },
+  {
+    "question": "What is the AI writing helper?",
+    "keywords": ["ai helper", "artificial", "writing", "suggest", "description", "generate"],
+    "answer": "Admins can get 3 draft descriptions for an event. The admin must read and edit the text before saving. AI text always needs human review."
+  },
+  {
+    "question": "How do I contact the team?",
+    "keywords": ["contact", "email", "phone", "help", "support", "talk"],
+    "answer": "Email help@localevents.example or call (02) 5550 1234 from Monday to Friday, 9am to 5pm."
+  }
+]

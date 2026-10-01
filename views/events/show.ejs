@@ -1,0 +1,148 @@
+<%- include('../partials/header') %>
+
+<%
+  var price = Number(event.price)
+  var priceText = 'Free'
+  if (price > 0) priceText = '$' + event.price
+  var maxQty = Math.min(10, ticketsLeft)
+%>
+
+<nav class="crumbs" aria-label="Breadcrumb">
+  <a href="/events">Events</a> <span aria-hidden="true">/</span> <span><%= event.title %></span>
+</nav>
+
+<div class="two-col event-layout">
+  <article class="box event-main">
+    <p class="tag">
+      <%= event.category_name %>
+      <% if (event.status == 'closed') { %><span class="badge badge-grey">closed</span><% } %>
+      <% if (locals.isPast) { %><span class="badge badge-grey">finished</span><% } %>
+    </p>
+    <h1><%= event.title %></h1>
+
+    <div class="facts">
+      <div class="fact">
+        <span class="fact-label">Date</span>
+        <span class="fact-value"><%= showDate(event.event_date) %></span>
+      </div>
+      <div class="fact">
+        <span class="fact-label">Time</span>
+        <span class="fact-value"><%= String(event.event_time).slice(0, 5) %></span>
+      </div>
+      <div class="fact">
+        <span class="fact-label">Venue</span>
+        <span class="fact-value"><%= event.venue %></span>
+      </div>
+      <div class="fact">
+        <span class="fact-label">Price</span>
+        <span class="fact-value"><%= priceText %></span>
+      </div>
+    </div>
+
+    <h2>About this event</h2>
+    <div class="description"><%= event.description %></div>
+
+    <!-- Audit info -->
+    <p class="audit">
+      Added by <%= event.created_by_name %> on <%= showDateTime(event.created_at) %>.
+      <% if (event.updated_by_name) { %>
+        Last changed by <%= event.updated_by_name %> on <%= showDateTime(event.updated_at) %>.
+      <% } %>
+    </p>
+
+    <% if (user && user.role == 'admin') { %>
+      <div class="actions">
+        <a href="/events/<%= event.id %>/edit" class="btn">Edit event</a>
+        <form action="/events/<%= event.id %>/delete" method="POST" class="inline js-confirm" data-msg="Delete this event and all its ticket requests?">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    <% } %>
+  </article>
+
+  <aside class="box side-box">
+    <p class="side-price"><%= priceText %><% if (price > 0) { %> <span class="small">per ticket</span><% } %></p>
+    <p class="small"><strong><%= ticketsLeft %></strong> of <%= event.total_tickets %> tickets left</p>
+
+    <hr class="line">
+
+    <% if (!user) { %>
+      <h2>Request tickets</h2>
+      <p class="small">Please log in to ask for tickets. It is free to join.</p>
+      <a href="/login" class="btn full">Log in</a>
+      <p class="small center">No account? <a href="/register">Register</a></p>
+
+    <% } else if (user.role == 'admin') { %>
+      <!-- Admin sees request counts -->
+      <h2>Requests</h2>
+      <% if (locals.counts) { %>
+        <ul class="count-list">
+          <li><span class="badge badge-pending">Pending</span> <strong><%= counts.pending %></strong></li>
+          <li><span class="badge badge-approved">Approved</span> <strong><%= counts.approved %></strong></li>
+          <li><span class="badge badge-rejected">Rejected</span> <strong><%= counts.rejected %></strong></li>
+          <li><span class="badge badge-cancelled">Cancelled</span> <strong><%= counts.cancelled %></strong></li>
+        </ul>
+      <% } %>
+      <a href="/tickets?search=<%= encodeURIComponent(event.title) %>" class="btn full">Manage requests</a>
+
+    <% } else if (locals.myRequest) { %>
+      <!-- User already has a request -->
+      <h2>Your request</h2>
+      <div class="my-request">
+        <p>You asked for <strong><%= myRequest.quantity %></strong> ticket(s).</p>
+        <p>Status: <span class="badge badge-<%= myRequest.status %>"><%= myRequest.status %></span></p>
+        <% if (myRequest.status == 'pending') { %>
+          <p class="small">The team will check it soon. You can still edit or cancel it.</p>
+        <% } else { %>
+          <p class="small">Your tickets are saved. Please bring your name to the door.</p>
+        <% } %>
+      </div>
+      <a href="/tickets" class="btn full">Go to My tickets</a>
+
+    <% } else if (locals.isPast) { %>
+      <h2>Request tickets</h2>
+      <p class="notice">This event has finished.</p>
+      <a href="/events?when=upcoming" class="btn btn-light full">See upcoming events</a>
+
+    <% } else if (event.status != 'open') { %>
+      <h2>Request tickets</h2>
+      <p class="notice">This event is closed. You can not ask for tickets.</p>
+
+    <% } else if (ticketsLeft <= 0) { %>
+      <h2>Request tickets</h2>
+      <p class="notice">Sorry, all tickets are gone.</p>
+
+    <% } else { %>
+      <!-- Request form -->
+      <h2>Request tickets</h2>
+      <%- include('../partials/errors') %>
+      <form action="/events/<%= event.id %>/request" method="POST" class="js-check" id="requestForm" data-price="<%= price %>" novalidate>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <div class="field">
+          <label for="quantity">How many tickets?</label>
+          <div class="qty">
+            <button type="button" class="btn btn-light qty-btn" id="qtyMinus" aria-label="One less ticket">&minus;</button>
+            <input type="number" id="quantity" name="quantity" min="1" max="<%= maxQty %>" value="<%= old.quantity || 1 %>" required>
+            <button type="button" class="btn btn-light qty-btn" id="qtyPlus" aria-label="One more ticket">+</button>
+          </div>
+          <p class="hint">You can ask for 1 to <%= maxQty %>.</p>
+        </div>
+
+        <p class="total">Total: <strong id="totalPrice"><%= priceText %></strong></p>
+
+        <div class="field">
+          <label for="note">Note (optional)</label>
+          <textarea id="note" name="note" rows="3" maxlength="255" placeholder="Example: we need a wheelchair space"><%= old.note || '' %></textarea>
+        </div>
+
+        <button type="submit" class="btn full">Send request</button>
+        <p class="hint center">The team will check your request. You pay at the door.</p>
+      </form>
+      <script src="/js/event.js"></script>
+    <% } %>
+  </aside>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,94 @@
+<%- include('../partials/header') %>
+
+<div class="page-head">
+  <div>
+    <h1>Admin</h1>
+    <p class="small">Hello <%= user.name %>. Here is what is happening today.</p>
+  </div>
+  <div class="actions no-top">
+    <a href="/events/new" class="btn">+ Add event</a>
+    <a href="/tickets?status=pending" class="btn btn-light">Check requests</a>
+  </div>
+</div>
+
+<%- include('menu') %>
+
+<div class="stats">
+  <a class="stat" href="/events"><span class="stat-num"><%= counts.events %></span><span>All events</span></a>
+  <a class="stat" href="/events?when=upcoming"><span class="stat-num"><%= counts.upcoming %></span><span>Upcoming</span></a>
+  <a class="stat" href="/tickets?status=pending"><span class="stat-num"><%= counts.pending %></span><span>Pending requests</span></a>
+  <a class="stat" href="/admin/users"><span class="stat-num"><%= counts.users %></span><span>Users</span></a>
+</div>
+
+<div class="two-col">
+  <!-- Pending requests -->
+  <section class="box">
+    <div class="box-head">
+      <h2>Waiting for you</h2>
+      <a href="/tickets?status=pending" class="small">See all</a>
+    </div>
+    <% if (pending.length == 0) { %>
+      <p class="empty">No pending requests. Good job!</p>
+    <% } else { %>
+      <ul class="plain-list">
+        <% pending.forEach(function (r) { %>
+          <li>
+            <span>
+              <strong><%= r.user_name %></strong> wants <%= r.quantity %> ticket(s)
+              <br><span class="small"><%= r.event_title %></span>
+            </span>
+            <form action="/tickets/<%= r.id %>/status" method="POST" class="inline">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <input type="hidden" name="status" value="approved">
+              <button type="submit" class="btn btn-small">Approve</button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </section>
+
+  <!-- Next events -->
+  <section class="box">
+    <div class="box-head">
+      <h2>Next events</h2>
+      <a href="/events?when=upcoming" class="small">See all</a>
+    </div>
+    <% if (nextEvents.length == 0) { %>
+      <p class="empty">No upcoming events. <a href="/events/new">Add one</a>.</p>
+    <% } else { %>
+      <ul class="plain-list">
+        <% nextEvents.forEach(function (ev) { %>
+          <li>
+            <span>
+              <a href="/events/<%= ev.id %>"><%= ev.title %></a>
+              <br><span class="small"><%= showDate(ev.event_date) %> &middot; <%= ev.venue %></span>
+            </span>
+            <span class="badge badge-<%= ev.status == 'open' ? 'approved' : 'grey' %>"><%= ev.status %></span>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </section>
+</div>
+
+<section class="box">
+  <div class="box-head">
+    <h2>Last actions</h2>
+    <a href="/admin/log" class="small">See full log</a>
+  </div>
+  <% if (logs.length == 0) { %>
+    <p class="empty">Nothing yet.</p>
+  <% } else { %>
+    <ul class="log-list">
+      <% logs.forEach(function (l) { %>
+        <li>
+          <span><strong><%= l.user_name || 'Unknown' %></strong> &mdash; <%= l.details %></span>
+          <span class="small"><%= showDateTime(l.created_at) %></span>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+</section>
+
+<%- include('../partials/footer') %>

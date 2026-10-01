@@ -1,0 +1,28 @@
+<%# One event card %>
+<% var d = showDate(ev.event_date).split(' ') %>
+<article class="card">
+  <div class="card-body">
+    <div class="date-box" aria-hidden="true">
+      <span class="date-day"><%= d[0] %></span>
+      <span class="date-month"><%= d[1] %></span>
+    </div>
+
+    <div class="card-info">
+      <p class="tag">
+        <%= ev.category_name %>
+        <% if (ev.status == 'closed') { %><span class="badge badge-grey">closed</span><% } %>
+      </p>
+      <h3 class="card-title">
+        <!-- Whole card is clickable -->
+        <a href="/events/<%= ev.id %>" class="card-link"><%= ev.title %></a>
+      </h3>
+      <p class="meta"><%= showDate(ev.event_date) %>, <%= String(ev.event_time).slice(0, 5) %></p>
+      <p class="meta"><%= ev.venue %></p>
+    </div>
+  </div>
+
+  <div class="card-foot">
+    <span class="price"><%= Number(ev.price) == 0 ? 'Free' : '$' + ev.price %></span>
+    <span class="more">View details &rarr;</span>
+  </div>
+</article>

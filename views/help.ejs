@@ -1,0 +1,36 @@
+<%- include('partials/header') %>
+
+<h1>Help</h1>
+
+<div class="two-col">
+  <section class="box">
+    <h2>Ask the help bot</h2>
+    <p class="small">The bot answers from our FAQ list. It does not send your question to other websites.</p>
+
+    <div class="chat" id="chatBox" aria-live="polite">
+      <p class="bot-msg">Hi! Ask me about events, tickets or your account.</p>
+    </div>
+
+    <form id="helpForm" class="chat-form">
+      <label for="question" class="sr-only">Your question</label>
+      <input type="text" id="question" name="question" maxlength="300" placeholder="Example: how do I cancel?" autocomplete="off">
+      <button type="submit" class="btn">Ask</button>
+    </form>
+    <p class="hint">Bot answers can be wrong. For real help, email help@localevents.example.</p>
+  </section>
+
+  <section>
+    <h2>Common questions</h2>
+    <% faqList.forEach(function (item) { %>
+      <details class="faq">
+        <summary><%= item.question %></summary>
+        <p><%= item.answer %></p>
+      </details>
+    <% }) %>
+  </section>
+</div>
+
+<input type="hidden" id="csrfToken" value="<%= csrfToken %>">
+<script src="/js/help.js"></script>
+
+<%- include('partials/footer') %>

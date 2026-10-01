@@ -1,0 +1,45 @@
+<%- include('partials/header') %>
+
+<div class="auth">
+  <!-- Left side info -->
+  <div class="auth-side">
+    <h2>Welcome back</h2>
+    <p>Log in to ask for tickets and see your requests.</p>
+    <ul>
+      <li>See all local events</li>
+      <li>Ask for up to 10 tickets</li>
+      <li>Check if your request is approved</li>
+    </ul>
+  </div>
+
+  <div class="auth-form">
+    <h1>Log in</h1>
+    <p class="sub">Use your email and password.</p>
+
+    <%- include('partials/errors') %>
+
+    <form action="/login" method="POST" class="js-check" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" value="<%= old.email || '' %>" required autocomplete="email">
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="btn full">Log in</button>
+    </form>
+
+    <p class="small">No account? <a href="/register">Register here</a>.</p>
+
+    <div class="demo-box">
+      <strong>Demo:</strong> admin@localevents.example / Admin123 &middot; sam@example.com / User1234
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

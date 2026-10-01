@@ -1,0 +1,31 @@
+<%- include('../partials/header') %>
+
+<p><a href="/tickets">&larr; Back</a></p>
+
+<div class="box small-box">
+  <h1>Edit request</h1>
+  <p>Event: <strong><%= ticket.event_title %></strong> (<%= showDate(ticket.event_date) %>)</p>
+
+  <%- include('../partials/errors') %>
+
+  <form action="/tickets/<%= ticket.id %>/edit" method="POST" class="js-check" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <div class="field">
+      <label for="quantity">How many tickets? (1 to 10)</label>
+      <input type="number" id="quantity" name="quantity" min="1" max="10" value="<%= ticket.quantity %>" required>
+    </div>
+
+    <div class="field">
+      <label for="note">Note (optional)</label>
+      <textarea id="note" name="note" rows="3" maxlength="255"><%= ticket.note || '' %></textarea>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn">Save</button>
+      <a href="/tickets" class="btn btn-light">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

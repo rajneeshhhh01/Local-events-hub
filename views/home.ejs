@@ -1,0 +1,52 @@
+<%- include('partials/header') %>
+
+<section class="hero">
+  <div class="hero-text">
+    <p class="hero-kicker">Riverside Local Events</p>
+    <h1>Find local events near you</h1>
+    <p class="lead">Markets, music, sport and workshops in our town. Look at the events and ask for tickets online.</p>
+    <div class="actions">
+      <a href="/events" class="btn">See all events</a>
+      <% if (!user) { %>
+        <a href="/register" class="btn btn-light">Make an account</a>
+      <% } %>
+    </div>
+    <ul class="hero-points">
+      <li>Free to join</li>
+      <li>Up to 10 tickets</li>
+      <li>Fast approval</li>
+    </ul>
+  </div>
+  <div class="hero-image">
+    <!-- Photo from Unsplash -->
+    <img src="/images/hero.jpg" alt="Crowd enjoying a live music event at night" width="1000" height="700">
+  </div>
+</section>
+
+<section>
+  <div class="box-head">
+    <h2>Coming soon</h2>
+    <a href="/events" class="small">See all events</a>
+  </div>
+  <% if (events.length == 0) { %>
+    <p class="empty">No events coming soon. Please check again later.</p>
+  <% } else { %>
+    <div class="grid">
+      <% events.forEach(function (ev) { %>
+        <%- include('partials/event-card', { ev: ev }) %>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<section>
+  <h2>How it works</h2>
+  <ol class="steps">
+    <li><span class="step-num">1</span><strong>Make an account</strong><span class="small">It is free and fast.</span></li>
+    <li><span class="step-num">2</span><strong>Pick an event</strong><span class="small">Ask for 1 to 10 tickets.</span></li>
+    <li><span class="step-num">3</span><strong>We check it</strong><span class="small">The team approves your request.</span></li>
+    <li><span class="step-num">4</span><strong>See the status</strong><span class="small">Look in "My tickets".</span></li>
+  </ol>
+</section>
+
+<%- include('partials/footer') %>

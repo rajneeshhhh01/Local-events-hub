@@ -1,0 +1,149 @@
+<%- include('../partials/header') %>
+
+<div class="page-head">
+  <div>
+    <h1><%= title %></h1>
+    <% if (user.role == 'admin') { %>
+      <p class="small">Check and approve ticket requests from people.</p>
+    <% } else { %>
+      <p class="small">All your ticket requests in one place.</p>
+    <% } %>
+  </div>
+  <% if (user.role != 'admin') { %>
+    <a href="/events" class="btn btn-light">Find more events</a>
+  <% } %>
+</div>
+
+<div class="tab-bar">
+  <nav class="tabs" aria-label="Filter by status">
+    <% var tabList = [['', 'All', tabs.all], ['pending', 'Pending', tabs.pending], ['approved', 'Approved', tabs.approved], ['rejected', 'Rejected', tabs.rejected], ['cancelled', 'Cancelled', tabs.cancelled]] %>
+    <% tabList.forEach(function (t) { %>
+      <a href="/tickets?status=<%= t[0] %>&search=<%= encodeURIComponent(search) %>"
+         class="tab <%= status == t[0] ? 'active' : '' %>"
+         <%- status == t[0] ? 'aria-current="page"' : '' %>>
+        <%= t[1] %> <span class="tab-count"><%= t[2] %></span>
+      </a>
+    <% }) %>
+  </nav>
+
+  <form action="/tickets" method="GET" class="mini-search" role="search">
+    <input type="hidden" name="status" value="<%= status %>">
+    <label for="search" class="sr-only">Search</label>
+    <input type="search" id="search" name="search" value="<%= search %>" placeholder="<%= user.role == 'admin' ? 'Search event or person' : 'Search event' %>">
+    <button type="submit" class="btn">Search</button>
+  </form>
+</div>
+
+<% if (requests.length == 0) { %>
+  <div class="empty-state">
+    <p><strong>No requests here.</strong></p>
+    <% if (user.role != 'admin') { %>
+      <p class="small">Pick an event and ask for tickets. They will show here.</p>
+      <a href="/events" class="btn">Browse events</a>
+    <% } else { %>
+      <p class="small">Try another tab or search word.</p>
+    <% } %>
+  </div>
+
+<% } else if (user.role != 'admin') { %>
+  <!-- User sees cards -->
+  <div class="ticket-list">
+    <% requests.forEach(function (r) { %>
+      <% var d = showDate(r.event_date).split(' ') %>
+      <% var price = Number(r.price) %>
+      <article class="ticket">
+        <div class="date-box" aria-hidden="true">
+          <span class="date-day"><%= d[0] %></span>
+          <span class="date-month"><%= d[1] %></span>
+        </div>
+
+        <div class="ticket-info">
+          <h2 class="ticket-title"><a href="/events/<%= r.event_id %>"><%= r.event_title %></a></h2>
+          <p class="meta"><%= showDate(r.event_date) %>, <%= String(r.event_time).slice(0, 5) %> &middot; <%= r.venue %></p>
+          <% if (r.note) { %><p class="meta">Note: <%= r.note %></p><% } %>
+          <p class="meta small">Asked on <%= showDateTime(r.created_at) %></p>
+        </div>
+
+        <div class="ticket-qty">
+          <span class="qty-num"><%= r.quantity %></span>
+          <span class="small">ticket(s)</span>
+          <span class="small"><%= price == 0 ? 'Free' : 'Total $' + (price * r.quantity).toFixed(2) %></span>
+        </div>
+
+        <div class="ticket-status">
+          <span class="badge badge-<%= r.status %>"><%= r.status %></span>
+          <% if (r.updated_by_name && r.status != 'pending') { %><span class="small">by <%= r.updated_by_name %></span><% } %>
+
+          <% if (r.status == 'pending') { %>
+            <div class="ticket-actions">
+              <a href="/tickets/<%= r.id %>/edit" class="btn btn-small btn-light">Edit</a>
+              <form action="/tickets/<%= r.id %>/cancel" method="POST" class="inline js-confirm" data-msg="Cancel this request?">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-small btn-danger">Cancel</button>
+              </form>
+            </div>
+          <% } %>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+
+<% } else { %>
+  <!-- Admin sees a table -->
+  <div class="box table-box">
+    <table>
+      <caption class="sr-only">Ticket requests</caption>
+      <thead>
+        <tr>
+          <th scope="col">Event</th>
+          <th scope="col">Person</th>
+          <th scope="col">Tickets</th>
+          <th scope="col">Status</th>
+          <th scope="col">Asked on</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% requests.forEach(function (r) { %>
+          <tr>
+            <td data-label="Event">
+              <a href="/events/<%= r.event_id %>"><%= r.event_title %></a>
+              <br><span class="small"><%= showDate(r.event_date) %></span>
+              <% if (r.note) { %><br><span class="small">Note: <%= r.note %></span><% } %>
+            </td>
+            <td data-label="Person"><%= r.user_name %><br><span class="small"><%= r.user_email %></span></td>
+            <td data-label="Tickets"><%= r.quantity %></td>
+            <td data-label="Status">
+              <span class="badge badge-<%= r.status %>"><%= r.status %></span>
+              <% if (r.updated_by_name) { %><br><span class="small">by <%= r.updated_by_name %></span><% } %>
+            </td>
+            <td data-label="Asked on"><%= showDateTime(r.created_at) %></td>
+            <td data-label="Actions" class="row-actions">
+              <% if (r.status == 'pending') { %>
+                <form action="/tickets/<%= r.id %>/status" method="POST" class="inline">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <input type="hidden" name="status" value="approved">
+                  <button type="submit" class="btn btn-small">Approve</button>
+                </form>
+                <form action="/tickets/<%= r.id %>/status" method="POST" class="inline">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <input type="hidden" name="status" value="rejected">
+                  <button type="submit" class="btn btn-small btn-light">Reject</button>
+                </form>
+              <% } %>
+              <form action="/tickets/<%= r.id %>/delete" method="POST" class="inline js-confirm" data-msg="Delete this request for good?">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-small btn-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<% var baseUrl = '/tickets?search=' + encodeURIComponent(search) + '&status=' + encodeURIComponent(status) + '&' %>
+<%- include('../partials/pager', { baseUrl: baseUrl }) %>
+
+<%- include('../partials/footer') %>

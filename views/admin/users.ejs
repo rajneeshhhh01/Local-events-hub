@@ -1,0 +1,48 @@
+<%- include('../partials/header') %>
+
+<h1>Users</h1>
+<%- include('menu') %>
+
+<div class="table-wrap">
+  <table>
+    <caption class="sr-only">All users</caption>
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Role</th>
+        <th scope="col">Requests</th>
+        <th scope="col">Joined</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach(function (u) { %>
+        <tr>
+          <td data-label="Name"><%= u.name %></td>
+          <td data-label="Email"><%= u.email %></td>
+          <td data-label="Role"><span class="badge badge-<%= u.role %>"><%= u.role %></span></td>
+          <td data-label="Requests"><%= u.request_count %></td>
+          <td data-label="Joined"><%= showDate(u.created_at) %></td>
+          <td data-label="Actions" class="row-actions">
+            <% if (u.id != user.id) { %>
+              <form action="/admin/users/<%= u.id %>/role" method="POST" class="inline">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <input type="hidden" name="role" value="<%= u.role == 'admin' ? 'user' : 'admin' %>">
+                <button type="submit" class="btn btn-small btn-light">Make <%= u.role == 'admin' ? 'user' : 'admin' %></button>
+              </form>
+              <form action="/admin/users/<%= u.id %>/delete" method="POST" class="inline js-confirm" data-msg="Delete this user and all their requests?">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-small btn-danger">Delete</button>
+              </form>
+            <% } else { %>
+              <span class="small">This is you</span>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>

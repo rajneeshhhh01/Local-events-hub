@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | Local Events Hub</title>
+  <link rel="icon" type="image/png" href="/images/icon.png">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="/" class="logo"><img src="/images/logo.png" alt="Local Events Hub - home"></a>
+
+    <button type="button" class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mainNav">Menu</button>
+
+    <nav class="nav" id="mainNav" aria-label="Main menu">
+      <a href="/events" class="<%= path.startsWith('/events') ? 'active' : '' %>">Events</a>
+      <a href="/help" class="<%= path == '/help' ? 'active' : '' %>">Help</a>
+
+      <% if (user) { %>
+        <% if (user.role == 'admin') { %>
+          <a href="/tickets" class="<%= path.startsWith('/tickets') ? 'active' : '' %>">Requests</a>
+          <a href="/admin" class="<%= path.startsWith('/admin') ? 'active' : '' %>">Admin</a>
+        <% } else { %>
+          <a href="/tickets" class="<%= path.startsWith('/tickets') ? 'active' : '' %>">My tickets</a>
+        <% } %>
+        <form action="/logout" method="POST" class="nav-form">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button type="submit" class="link-btn">Log out (<%= user.name %>)</button>
+        </form>
+      <% } else { %>
+        <a href="/login" class="<%= path == '/login' ? 'active' : '' %>">Log in</a>
+        <a href="/register" class="<%= path == '/register' ? 'active' : '' %>">Register</a>
+      <% } %>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap page">
+  <% if (flash) { %>
+    <div class="alert alert-<%= flash.type %>" role="status"><%= flash.text %></div>
+  <% } %>

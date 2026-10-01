@@ -1,0 +1,9 @@
+<nav class="sub-nav" aria-label="Admin menu">
+  <a href="/admin" class="<%= path == '/admin' || path == '/admin/' ? 'active' : '' %>">Dashboard</a>
+  <a href="/events/new">Add event</a>
+  <a href="/tickets">Requests</a>
+  <a href="/admin/users" class="<%= path == '/admin/users' ? 'active' : '' %>">Users</a>
+  <a href="/admin/categories" class="<%= path == '/admin/categories' ? 'active' : '' %>">Categories</a>
+  <a href="/admin/log" class="<%= path == '/admin/log' ? 'active' : '' %>">Activity log</a>
+  <a href="/admin/ai-log" class="<%= path == '/admin/ai-log' ? 'active' : '' %>">AI log</a>
+</nav>

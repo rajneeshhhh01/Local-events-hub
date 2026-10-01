@@ -1,0 +1,21 @@
+{
+  "name": "local-events-hub",
+  "version": "1.0.0",
+  "description": "Events and ticket requests web app for a local events organiser (ICT203 Assessment 3)",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js"
+  },
+  "author": "Varandeep Singh, Rajneesh, Asad Ullah",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0",
+    "mysql2": "^3.11.5"
+  }
+}

@@ -1,0 +1,54 @@
+<%- include('partials/header') %>
+
+<div class="auth">
+  <!-- Left side info -->
+  <div class="auth-side">
+    <h2>Join Local Events Hub</h2>
+    <p>Make a free account in one minute.</p>
+    <ul>
+      <li>Free to join</li>
+      <li>We only keep your name and email</li>
+      <li>Your password is stored safely (hashed)</li>
+    </ul>
+  </div>
+
+  <div class="auth-form">
+    <h1>Register</h1>
+    <p class="sub">All fields are needed.</p>
+
+    <%- include('partials/errors') %>
+
+    <form action="/register" method="POST" class="js-check" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" name="name" value="<%= old.name || '' %>" required minlength="2" maxlength="100" autocomplete="name">
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" value="<%= old.email || '' %>" required maxlength="150" autocomplete="email">
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required minlength="8" data-rule="password" autocomplete="new-password" aria-describedby="passHelp">
+          <p class="hint" id="passHelp">At least 8 letters. Use letters and numbers.</p>
+        </div>
+
+        <div class="field">
+          <label for="confirm">Type password again</label>
+          <input type="password" id="confirm" name="confirm" required data-match="password" autocomplete="new-password">
+        </div>
+      </div>
+
+      <button type="submit" class="btn full">Make account</button>
+    </form>
+
+    <p class="small">Have an account? <a href="/login">Log in</a>.</p>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,18 @@
+<%# Page links %>
+<% if (totalPages > 1) { %>
+  <nav class="pager" aria-label="Pages">
+    <% if (page > 1) { %>
+      <a href="<%= baseUrl %>page=<%= page - 1 %>">&larr; Back</a>
+    <% } %>
+    <% for (let i = 1; i <= totalPages; i++) { %>
+      <% if (i == page) { %>
+        <span class="current" aria-current="page"><%= i %></span>
+      <% } else { %>
+        <a href="<%= baseUrl %>page=<%= i %>"><%= i %></a>
+      <% } %>
+    <% } %>
+    <% if (page < totalPages) { %>
+      <a href="<%= baseUrl %>page=<%= page + 1 %>">Next &rarr;</a>
+    <% } %>
+  </nav>
+<% } %>

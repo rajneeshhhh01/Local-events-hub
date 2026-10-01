@@ -1,0 +1,35 @@
+<%- include('../partials/header') %>
+
+<h1>AI log</h1>
+<%- include('menu') %>
+
+<p>This page shows what the AI helper suggested and what the admin kept. Status: <strong>suggested</strong> = not used yet, <strong>accepted</strong> = used as it was, <strong>edited</strong> = used with changes, <strong>rejected</strong> = not used.</p>
+
+<% if (rows.length == 0) { %>
+  <p class="empty">The AI helper has not been used yet.</p>
+<% } else { %>
+  <% rows.forEach(function (r) { %>
+    <article class="box ai-log-item">
+      <p>
+        <span class="badge badge-<%= r.status %>"><%= r.status %></span>
+        <strong><%= r.user_name || 'Unknown' %></strong> on <%= showDateTime(r.created_at) %>
+        <% if (r.event_title) { %> &middot; Event: <a href="/events/<%= r.event_id %>"><%= r.event_title %></a><% } %>
+      </p>
+      <p class="small">Input: <%= r.input_text %></p>
+      <details>
+        <summary>Show AI drafts (<%= r.drafts.length %>)</summary>
+        <ol>
+          <% r.drafts.forEach(function (d, i) { %>
+            <li class="<%= r.chosen_option == i + 1 ? 'chosen' : '' %>"><%= d %><% if (r.chosen_option == i + 1) { %> <strong>(picked)</strong><% } %></li>
+          <% }) %>
+        </ol>
+        <% if (r.final_text) { %>
+          <p><strong>Final saved text:</strong></p>
+          <p class="description"><%= r.final_text %></p>
+        <% } %>
+      </details>
+    </article>
+  <% }) %>
+<% } %>
+
+<%- include('../partials/footer') %>

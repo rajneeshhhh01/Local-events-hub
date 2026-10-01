@@ -1,0 +1,62 @@
+<%- include('../partials/header') %>
+
+<div class="page-head">
+  <h1>Events</h1>
+  <% if (user && user.role == 'admin') { %>
+    <a href="/events/new" class="btn">+ Add event</a>
+  <% } %>
+</div>
+
+<form action="/events" method="GET" class="filters" role="search">
+  <div class="field">
+    <label for="search">Search</label>
+    <input type="search" id="search" name="search" value="<%= search %>" placeholder="Title, venue or word">
+  </div>
+
+  <div class="field">
+    <label for="category">Category</label>
+    <select id="category" name="category">
+      <option value="">All</option>
+      <% categories.forEach(function (c) { %>
+        <option value="<%= c.id %>" <%= category == c.id ? 'selected' : '' %>><%= c.name %></option>
+      <% }) %>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="when">When</label>
+    <select id="when" name="when">
+      <option value="">Any time</option>
+      <option value="upcoming" <%= when == 'upcoming' ? 'selected' : '' %>>Upcoming</option>
+      <option value="past" <%= when == 'past' ? 'selected' : '' %>>Past</option>
+    </select>
+  </div>
+
+  <div class="field filter-btns">
+    <button type="submit" class="btn">Search</button>
+    <a href="/events" class="btn btn-light">Clear</a>
+  </div>
+</form>
+
+<p class="small"><%= total %> event(s) found</p>
+
+<% if (events.length == 0) { %>
+  <div class="empty">
+    <p>No events match your search.</p>
+    <p><a href="/events">Show all events</a></p>
+  </div>
+<% } else { %>
+  <div class="grid">
+    <% events.forEach(function (ev) { %>
+      <%- include('../partials/event-card', { ev: ev }) %>
+    <% }) %>
+  </div>
+<% } %>
+
+<%
+  // Keep search in page links
+  var baseUrl = '/events?search=' + encodeURIComponent(search) + '&category=' + encodeURIComponent(category) + '&when=' + encodeURIComponent(when) + '&'
+%>
+<%- include('../partials/pager', { baseUrl: baseUrl }) %>
+
+<%- include('../partials/footer') %>

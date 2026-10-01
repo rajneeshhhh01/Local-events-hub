@@ -1,0 +1,55 @@
+<%- include('../partials/header') %>
+
+<h1>Activity log</h1>
+<%- include('menu') %>
+
+<form action="/admin/log" method="GET" class="filters">
+  <div class="field">
+    <label for="type">Type</label>
+    <select id="type" name="type">
+      <option value="">All</option>
+      <option value="event" <%= type == 'event' ? 'selected' : '' %>>Events</option>
+      <option value="ticket_request" <%= type == 'ticket_request' ? 'selected' : '' %>>Ticket requests</option>
+      <option value="user" <%= type == 'user' ? 'selected' : '' %>>Users</option>
+      <option value="category" <%= type == 'category' ? 'selected' : '' %>>Categories</option>
+      <option value="ai_suggestion" <%= type == 'ai_suggestion' ? 'selected' : '' %>>AI</option>
+    </select>
+  </div>
+  <div class="field filter-btns">
+    <button type="submit" class="btn">Filter</button>
+  </div>
+</form>
+
+<% if (logs.length == 0) { %>
+  <p class="empty">No log items.</p>
+<% } else { %>
+  <div class="table-wrap">
+    <table>
+      <caption class="sr-only">Activity log</caption>
+      <thead>
+        <tr>
+          <th scope="col">When</th>
+          <th scope="col">Who</th>
+          <th scope="col">Action</th>
+          <th scope="col">Item</th>
+          <th scope="col">Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% logs.forEach(function (l) { %>
+          <tr>
+            <td data-label="When"><%= showDateTime(l.created_at) %></td>
+            <td data-label="Who"><%= l.user_name || 'Unknown' %></td>
+            <td data-label="Action"><%= l.action %></td>
+            <td data-label="Item"><%= l.item_type %> #<%= l.item_id %></td>
+            <td data-label="Details"><%= l.details %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('../partials/pager', { baseUrl: '/admin/log?type=' + encodeURIComponent(type) + '&' }) %>
+
+<%- include('../partials/footer') %>
