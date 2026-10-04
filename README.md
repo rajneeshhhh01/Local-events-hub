@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Assignment-3
-=======
 # Local Events Hub
 
 A web app for a local events organiser. People can find events and ask for tickets. Staff (admins) manage events, approve requests and see an activity log. It has two responsible AI features: a help bot and an AI writing helper.
@@ -143,4 +140,3 @@ local-events-hub/
 - OWASP Foundation. (2021). *OWASP Top 10: 2021*. https://owasp.org/Top10/
 - W3C. (2023). *Web Content Accessibility Guidelines (WCAG) 2.2*. https://www.w3.org/TR/WCAG22/
 - Anthropic. (2026). *Claude* [Large language model]. https://claude.ai
->>>>>>> 46a059a (Initial frontend upload)
